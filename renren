@@ -1,0 +1,40 @@
+#! /usr/bin/env python
+# coding:utf-8
+import re
+import urllib
+import urllib2
+import sys
+import cookielib
+
+## 这段代码是用于解决中文报错的问题
+reload(sys)
+sys.setdefaultencoding("utf8")
+#####################################################
+# 登录人人
+loginurl='http://www.renren.com/PLogin.do'
+codeurl='http://icode.renren.com/getcode.do?t=web_login&rnd=0.5085335571485394'
+testurl='http://www.renren.com/416961504/profile'
+renren_cookie='cookie_r.txt'
+cookie=cookielib.MozillaCookieJar(renren_cookie)
+handler=urllib2.HTTPCookieProcessor(cookie)
+opener=urllib2.build_opener(handler)
+email='18810606407'
+password='1A1A2B2B3C3C'
+domain='renren.com'
+picture=opener.open(codeurl).read()
+local=open('code_image.jpg','wb')
+local.write(picture)
+local.close()
+icode=raw_input('请输入验证码：')
+post_data = {'domain': domain, 'email': email, 'password': password,'icode':icode}
+headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36'}
+req = urllib2.Request(loginurl, urllib.urlencode(post_data), headers=headers)
+response=opener.open(req)
+result=response.read()
+print result
+cookie.save(ignore_discard=True,ignore_expires=True)
+test_result=opener.open(testurl).read()
+#print test_result
+
+
